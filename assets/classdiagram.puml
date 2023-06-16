@@ -1,0 +1,135 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class Show {
+   - timestamp: DateTime
+   - dimension: Dimension
+   + Show(movie: Movie, timestamp: DateTime, dimension: Dimension, hall: Hall): Show
+   + cancelShow(): void
+   + getAvailableSeats(): List<ShowSeat>
+   + getFilteredAvailableSeats(property: SeatProperty): List<ShowSeat>
+}
+
+class MoviePreview {
+    - image: String
+    - trailer: String
+    - title: String
+}
+class Movie extends MoviePreview{
+    - banner: String
+    - fsk: FSK
+    - story: String
+    - length: Integer
+    - genre: Genre
+    + Movie(image: String, trailer: String, title: String, banner: String, fsk: FSK, length: Integer, genre: Genre): Movie
+    + getAvailableShows(): List<Show>
+    + getActors(): List<Actor>
+}
+class Actor{
+    - name: String
+    - firstname: String
+    - birth: Date
+    - image: String
+    + Actor(name: String, firstname: String, birth: Date, image: String): Actor
+}
+abstract class User{
+    - role: Role
+    - name: String
+    - firstname: String
+    - mail: String
+    - passwort: String
+}
+class Customer extends User{
+    - birth: Date
+    - preferencedPaymentMethod: PaymentMethod
+    + Customer(name: String, firstname: String, mail: String, passwort: String, birth:Date, preferencedPaymentMethod: PaymentMethod): Customer
+}
+class Employee extends User{
+}
+class Admin extends User{
+}
+class Hall{
+    - name: String
+    + Hall(name: String, seats: List<Seat>): Hall
+}
+class Seat{
+    - row: Integer
+    - colum: Integer
+    - property: SeatProperty
+    + Seat(row: Integer, colum: Integer, property: SeatProperty): Seat
+}
+class Booking{
+    - type: BookingType
+    - usedPaymentMethod: PaymentMethod
+    + reserve(seat: Seat, show: Show, paymentMethod: PaymentMethod, customer: Customer): Booking
+    + purchase(seat: Seat, show: Show, paymentMethod: PaymentMethod, customer: Customer): Booking
+    + unblock(customer: Customer, seat: Seat, show: Show): void
+}
+enum BookingType{
+    RESERVATION
+    PURCHASE
+}
+enum FSK{
+    FSK 0
+    FSK 6
+    ...
+}
+enum Dimension{
+    3D
+    2D
+}
+class MovieActorRole{
+    - roleName: String
+    + MovieActorRole(movie: Movie, actor: Actor, roleName: String): MovieActorRole
+}
+class ShowSeat{
+    - state: SeatState
+    - price: Integer
+    + setSelected(): boolean
+    + setUnavailable(): boolean
+    + setAvailable(): boolean
+}
+enum Genre{
+    ACTION
+    ADVENTURE
+    ...
+}
+enum PaymentMethod{
+    PAYPAL
+    CREDIT_CARD
+    ...
+}
+enum SeatState{
+    AVAILABLE
+    BOOKED
+    RESERVED
+    SELECTED
+    UNAVAILABLE
+}
+enum SeatProperty{
+    VIP
+    CLASSIC
+    COUPLE
+    ...
+}
+
+Show "*" -up-* "1" Movie  : shows >
+Show "*" --* "1" Hall : < presents
+Dimension "1" -right- "*" Show : < has
+Movie "1" *--" *" MovieActorRole : has >
+Actor "1" *-up- "*" MovieActorRole : is >
+Movie "*" -- "1" Genre : has >
+Movie "*" -- "1" FSK : has >
+Show "1" *-- "*" ShowSeat : has >
+Seat "*" -right- "1" SeatProperty : has >
+Hall "1" *-- "*" Seat : contains >
+ShowSeat "1" --* "1" Seat : < is
+ShowSeat "*" -- "1" SeatState: has >
+Booking "*" -up-* "1" BookingType : has >
+Booking "*" --* "1" Customer : < takes
+Booking "1" --* "1" ShowSeat : includes >
+PaymentMethod "1" -- "*" Booking : < has
+PaymentMethod "1" -- "*" Customer : < has
+
+
+@enduml
