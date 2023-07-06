@@ -1,0 +1,25 @@
+@startuml
+'https://plantuml.com/state-diagram
+
+state "booked" as b
+state "available" as a
+state "reserved" as r
+state "selected" as s
+state "unavailable" as u
+
+[*] --> a : Show and ShowSeats were created \n cancelShow()
+a --> u : Seat was destroyed \n setUnavailable()
+u --> a : Seat was repaired \n setAvailable()
+a --> s : Customer selected Seat \n setSelected()
+s --> a : Customer deselected Seat \n setAvailable()
+s --> r : Customer reserved ShowSeat \n reserve()
+s --> b : Customer purchased ShowSeat\n purchase()
+r --> b : Customer purchased ShowSeat \n purchase()
+r --> a : Customer doesn't go to Show \n unblock()
+a --> [*] : Show was canceled \n cancelShow()
+b --> [*] : Show was canceled \n cancelShow()
+r --> [*] : Show was canceled \n cancelShow()
+s --> [*] : Show was canceled \n cancelShow()
+u --> [*] : Show was canceled \n cancelShow()
+
+@enduml
