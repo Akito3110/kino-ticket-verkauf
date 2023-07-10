@@ -7,7 +7,7 @@ state "reserved" as r
 state "selected" as s
 state "unavailable" as u
 
-[*] --> a : Show and ShowSeats were created \n cancelShow()
+[*] --> a : Show and ShowSeats were created \n createShow()
 a --> u : Seat was destroyed \n setUnavailable()
 u --> a : Seat was repaired \n setAvailable()
 a --> s : Customer selected Seat \n setSelected()
